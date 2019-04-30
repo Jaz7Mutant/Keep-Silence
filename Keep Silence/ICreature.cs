@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Keep_Silence
 {
-    interface Interface1
+    public interface ICreature
     {
+        CreatureCommand MakeStep(Game game);
+        int GetDrawingPriority();
+        double GetNoiseLevel();
+        void ActionInConflict(ICreature conflictedObject, Game game);
     }
 }
