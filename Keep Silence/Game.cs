@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,5 +24,9 @@ namespace Keep_Silence
         {
             throw new NotImplementedException();
         }
+
+        public double GetDistanceBetweenPoints(Point first, Point second) =>
+            Math.Sqrt((first.X - second.X) * (first.X - second.X) 
+                      + (first.Y - second.Y) * (first.Y - second.Y));
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ namespace Keep_Silence
 {
     public class Player : ICreature
     {
+        public Point Position;
+        private const double IdleNoiseLevel = 3;
         public CreatureCommand MakeStep(Game game)
         {
             throw new NotImplementedException();
