@@ -12,6 +12,5 @@ namespace Keep_Silence
         int GetDrawingPriority();
         double GetNoiseLevel();
         void ActionInConflict(ICreature conflictedObject, Game game);
-        // CatGav
     }
 }

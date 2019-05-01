@@ -9,7 +9,7 @@ namespace Keep_Silence
 {
     public class Game
     {
-        public Room CurentRoom;
+        public Room CurrentRoom;
         public Keys KeyPressed;
         public Player Player;
         private Dictionary<string, Room> roomList;
