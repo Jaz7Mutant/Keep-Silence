@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace Keep_Silence
 {
+    public class Terrain : IEnvironment
+    {
+        public double Illumination { get; set; }
+        public bool InteractWithPlayer(Game game)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class Wall : IEnvironment
     {
         public double Illumination { get; set; }

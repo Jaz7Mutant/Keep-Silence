@@ -39,8 +39,14 @@ namespace Keep_Silence
 
             //TODO: Dijkstra path finder
             NoiseLevel = NoisePerStep;
-            //TODO: Find path to player
-            return new CreatureCommand() {InteractWithPlayer = false, target = Position + new Size(1, 1)}; 
+            var shiftX = game.Player.Position.X.CompareTo(Position.X);
+            var shiftY = game.Player.Position.Y.CompareTo(Position.Y);
+            var target = Position;
+            if (shiftX != 0 && game.IsStepCorrect(Position, new Point(Position.X + shiftX, Position.Y)))
+                target.X += shiftX;
+            else if (shiftY != 0 && game.IsStepCorrect(Position, new Point(Position.X, Position.Y + shiftY)))
+                target.Y += shiftY;
+            return new CreatureCommand() {InteractWithPlayer = false, target = target}; 
         }
 
         public int GetDrawingPriority() => 5;

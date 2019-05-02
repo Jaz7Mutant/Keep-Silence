@@ -10,7 +10,9 @@ namespace Keep_Silence
     public class Player : ICreature
     {
         public Point Position;
-        private const double IdleNoiseLevel = 3;
+        public double NoiseLevel;
+        private const double IdleNoiseLevel = 2;
+        private const double NoisePerStep = 10;
         public CreatureCommand MakeStep(Game game)
         {
             throw new NotImplementedException();

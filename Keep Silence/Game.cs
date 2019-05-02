@@ -28,5 +28,16 @@ namespace Keep_Silence
         public double GetDistanceBetweenPoints(Point first, Point second) =>
             Math.Sqrt((first.X - second.X) * (first.X - second.X) 
                       + (first.Y - second.Y) * (first.Y - second.Y));
+
+        public bool IsStepCorrect(Point current, Point target) =>
+            (target.X - current.X == 0 ^ target.Y - current.Y == 0)
+            && InBounds(target)
+            && CurrentRoom.Map[target.X, target.Y] is Terrain;
+
+        private bool InBounds(Point point) =>
+            point.X < CurrentRoom.Width 
+            && point.X >= 0 
+            && point.Y < CurrentRoom.Height 
+            && point.Y >= 0;
     }
 }
