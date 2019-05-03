@@ -25,6 +25,16 @@ namespace Keep_Silence
             throw new NotImplementedException();
         }
 
+        public void GameOver()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Pause()
+        {
+            throw new NotImplementedException();
+        }
+
         public double GetDistanceBetweenPoints(Point first, Point second) =>
             Math.Sqrt((first.X - second.X) * (first.X - second.X) 
                       + (first.Y - second.Y) * (first.Y - second.Y));

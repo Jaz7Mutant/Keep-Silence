@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace Keep_Silence
 {
@@ -15,6 +10,11 @@ namespace Keep_Silence
         private const double IdleNoiseLevel = 5;
         private const int TicksBeforeBite = 8;
         private const double NoisePerStep = 10;
+
+        public int GetDrawingPriority() => 5;
+
+        public double GetNoiseLevel() => NoiseLevel;
+
         public CreatureCommand MakeStep(Game game)
         {
             NoiseLevel = IdleNoiseLevel;
@@ -25,16 +25,16 @@ namespace Keep_Silence
                 if (_biteLoading < TicksBeforeBite)
                 {
                     _biteLoading++;
-                    return new CreatureCommand(){InteractWithPlayer = false, target = Position};
+                    return new CreatureCommand(){target = Position};
                 }
 
                 _biteLoading = 0;
-                return new CreatureCommand(){InteractWithPlayer = true, target = Position};
+                return new CreatureCommand(){target = Position, HitAnimation = true};
             }
 
             if (game.Player.GetNoiseLevel() < distanceToPlayer)
             {
-                return new CreatureCommand() { InteractWithPlayer = false, target = Position };
+                return new CreatureCommand() {target = Position};
             }
 
             //TODO: Dijkstra path finder
@@ -46,12 +46,8 @@ namespace Keep_Silence
                 target.X += shiftX;
             else if (shiftY != 0 && game.IsStepCorrect(Position, new Point(Position.X, Position.Y + shiftY)))
                 target.Y += shiftY;
-            return new CreatureCommand() {InteractWithPlayer = false, target = target}; 
+            return new CreatureCommand() {target = target}; 
         }
-
-        public int GetDrawingPriority() => 5;
-
-        public double GetNoiseLevel() => NoiseLevel;
 
         public void ActionInConflict(ICreature conflictedObject, Game game)
         {
