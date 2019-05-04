@@ -10,6 +10,7 @@ namespace Keep_Silence
     public class CreatureCommand
     {
         public Point target;
-        public bool InteractWithPlayer;
+        //public bool InteractWithPlayer;
+        public bool HitAnimation;
     }
 }
