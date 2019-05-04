@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace Keep_Silence
+﻿namespace Keep_Silence
 {
     public interface IEnvironment
     {

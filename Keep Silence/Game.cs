@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Keep_Silence
@@ -31,6 +28,11 @@ namespace Keep_Silence
         }
 
         public void Pause()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowMessage(string message)
         {
             throw new NotImplementedException();
         }
