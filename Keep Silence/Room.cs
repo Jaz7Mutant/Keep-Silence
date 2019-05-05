@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Keep_Silence
 {
@@ -15,9 +11,25 @@ namespace Keep_Silence
         public int Width => Map.GetLength(0);
         public int Height => Map.GetLength(1);
 
-        public void LightenArea(int radius, Point center)
+        public void LightenNewArea(int radius, Point center)
         {
-            throw new NotImplementedException();
+            ChangeIlluminationInArea(2*radius, center, 0);
+            ChangeIlluminationInArea(radius, center, 100);
+        }
+
+        private void ChangeIlluminationInArea(int radius, Point center, double illumination)
+        {
+            for (var i = -radius; i <= radius; i++)
+            {
+                for (var j = -radius; j <= radius; j++)
+                {
+                    var x = center.X + i;
+                    var y = center.Y + j;
+                    if (x < 0 || y < 0 || x >= Width || y >= Height)
+                        continue;
+                    Map[x, y].Illumination = illumination;
+                }
+            }
         }
     }
 }
