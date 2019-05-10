@@ -12,8 +12,8 @@ namespace Keep_Silence
         private static void Main()
         {
             var game = new Game();
-            game.CreateRoomList();
-            Application.Run(new KeepSilenceForm());
+            game.LoadRooms();
+            Application.Run(new KeepSilenceForm(game));
         }
     }
 }

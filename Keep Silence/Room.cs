@@ -7,7 +7,6 @@ namespace Keep_Silence
     {
         public IEnvironment[,] Map;
         public List<Monster> Monsters;
-        public List<Point> playerStartPositions;
         public int Width => Map.GetLength(0);
         public int Height => Map.GetLength(1);
 

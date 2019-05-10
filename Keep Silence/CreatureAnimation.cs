@@ -4,8 +4,7 @@ namespace Keep_Silence
 {
     public class CreatureAnimation
     {
-        public CreatureCommand Command;
-        public ICreature Creature;
+        public bool HitAnimation;
         public Point Location;
         public Point TargetLogicalLocation;
     }
