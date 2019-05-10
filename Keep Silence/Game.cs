@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Keep_Silence
@@ -14,7 +15,8 @@ namespace Keep_Silence
 
         public void LoadRooms()
         {
-            throw new NotImplementedException();
+            roomList = RoomLoader.GetRoomsFromDirectory();
+            CurrentRoom = roomList.First().Value;
         }
 
         public void ChangeRoom(string roomName)

@@ -7,13 +7,15 @@ namespace Keep_Silence
     {
         public double Illumination { get; set; }
         public bool IsOpen;
-        public string nextRoomName;
+        public string NextRoomName;
+        public Point NextRoomStartPosition;
 
         public void InteractWithPlayer(Game game)
         {
             if (IsOpen)
             {
-                game.ChangeRoom(nextRoomName);
+                game.ChangeRoom(NextRoomName);
+                game.Player.Position = NextRoomStartPosition;
             }
         }
     }
@@ -28,7 +30,7 @@ namespace Keep_Silence
         public void InteractWithPlayer(Game game)
         {
             game.Player.ChangeHealthPoints(DeltaPlayerHealthPoints, game);
-            if (game.CurrentRoom.Map[DoorToUnlock.X, DoorToUnlock.Y] is Door)
+            if (DoorToUnlock.X != -1 && DoorToUnlock.Y != -1)
             {
                 ((Door) game.CurrentRoom.Map[DoorToUnlock.X, DoorToUnlock.Y]).IsOpen = true;
             }

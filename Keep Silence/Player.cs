@@ -44,13 +44,13 @@ namespace Keep_Silence
 
                 case Keys.F:
                     InteractWithEnvironment(game);
-                    return new CreatureCommand() {HitAnimation = false, target = Position};
+                    return new CreatureCommand {HitAnimation = false, target = Position};
                 case Keys.Escape:
                     game.Pause();
-                    return new CreatureCommand() {HitAnimation = false, target = Position};
+                    return new CreatureCommand {HitAnimation = false, target = Position};
                 case Keys.Space:
                     MakeHit(game);
-                    return new CreatureCommand() {HitAnimation = true, target = Position};
+                    return new CreatureCommand {HitAnimation = true, target = Position};
             }
 
             if (!game.IsStepCorrect(Position, new Point(Position.X + shiftX, Position.Y)))
@@ -62,7 +62,7 @@ namespace Keep_Silence
                 NoiseLevel = NoisePerStep;
             else NoiseLevel = IdleNoiseLevel;
 
-            return new CreatureCommand()
+            return new CreatureCommand
             {
                 HitAnimation = false,
                 target = new Point(Position.X + shiftX, Position.Y + shiftY)
