@@ -7,5 +7,6 @@ namespace Keep_Silence
         public bool HitAnimation;
         public Point Location;
         public Point TargetLogicalLocation;
+        public ICreature Creature;
     }
 }

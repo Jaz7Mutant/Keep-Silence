@@ -4,5 +4,6 @@
     {
         double Illumination { get; set; }
         void InteractWithPlayer(Game game);
+        string GetImageFileName();
     }
 }
