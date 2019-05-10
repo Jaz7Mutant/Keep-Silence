@@ -8,14 +8,12 @@ namespace Keep_Silence
     {
         public Point Position;
         public Directions Direction = Directions.Right;
+        public bool ChangedDirection;
         public double NoiseLevel;
         public double HealthPoints;
         private const double IdleNoiseLevel = 2;
         private const double NoisePerStep = 10;
         private const double NoisePerHit = 13;
-        private const double DamageFromMonster = 60;
-
-        public int GetDrawingPriority() => 1;
 
         public double GetNoiseLevel() => NoiseLevel;
 
@@ -23,36 +21,59 @@ namespace Keep_Silence
         {
             var shiftX = 0;
             var shiftY = 0;
+            ChangedDirection = false;
+            
             switch (game.KeyPressed)
             {
+                //TODO Убрать Keys, Выделить в метод
                 case Keys.W:
                     shiftY = -1;
+                    if (Direction != Directions.Up)
+                    { 
+                        ChangedDirection = true;
+                        shiftY = 0;
+                    }
                     Direction = Directions.Up;
                     break;
                 case Keys.S:
                     shiftY = 1;
+                    if (Direction != Directions.Down)
+                    {
+                        ChangedDirection = true;
+                        shiftY = 0;
+                    }
                     Direction = Directions.Down;
                     break;
                 case Keys.D:
                     shiftX = 1;
+                    if (Direction != Directions.Right)
+                    {
+                        ChangedDirection = true;
+                        shiftX = 0;
+                    }
                     Direction = Directions.Right;
                     break;
                 case Keys.A:
                     shiftX = -1;
+                    if (Direction != Directions.Left)
+                    {
+                        ChangedDirection = true;
+                        shiftX = 0;
+                    }
                     Direction = Directions.Left;
                     break;
 
                 case Keys.F:
                     InteractWithEnvironment(game);
-                    return new CreatureCommand {HitAnimation = false, target = Position};
+                    return new CreatureCommand {HitAnimation = false, Target = Position};
                 case Keys.Escape:
                     game.Pause();
-                    return new CreatureCommand {HitAnimation = false, target = Position};
+                    return new CreatureCommand {HitAnimation = false, Target = Position};
                 case Keys.Space:
                     MakeHit(game);
-                    return new CreatureCommand {HitAnimation = true, target = Position};
+                    return new CreatureCommand {HitAnimation = true, Target = Position};
             }
-
+            
             if (!game.IsStepCorrect(Position, new Point(Position.X + shiftX, Position.Y)))
                 shiftX = 0;
             if (!game.IsStepCorrect(Position, new Point(Position.X, Position.Y + shiftY)))
@@ -65,7 +86,7 @@ namespace Keep_Silence
             return new CreatureCommand
             {
                 HitAnimation = false,
-                target = new Point(Position.X + shiftX, Position.Y + shiftY)
+                Target = new Point(Position.X + shiftX, Position.Y + shiftY)
             };
         }
 
@@ -81,7 +102,7 @@ namespace Keep_Silence
         {
             if (conflictedObject is Monster)
             {
-                ChangeHealthPoints(DamageFromMonster, game);
+                ChangeHealthPoints(Monster.DamageToPlayer, game);
             }
         }
 
@@ -101,6 +122,10 @@ namespace Keep_Silence
                     throw new ArgumentOutOfRangeException("Incorrect hit direction");
             }
         }
+
+        public string GetImageFileName() => "Player.png";
+
+        public string GetHitImageFileName() => "PlayerHit.png";
 
         private void InteractWithEnvironment(Game game)
         {

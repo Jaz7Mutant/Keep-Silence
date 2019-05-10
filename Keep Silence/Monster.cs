@@ -7,11 +7,12 @@ namespace Keep_Silence
         public Point Position;
         public double NoiseLevel;
         private int _biteLoading;
+        private int _moveLoading;
         private const double IdleNoiseLevel = 5;
-        private const int TicksBeforeBite = 8;
+        private const int TicksBeforeBite = 10; //Todo Причесать константы
+        private const int TicksBeforeMove = 5;
         private const double NoisePerStep = 10;
-
-        public int GetDrawingPriority() => 5;
+        public const double DamageToPlayer = 60;
 
         public double GetNoiseLevel() => NoiseLevel;
 
@@ -25,19 +26,20 @@ namespace Keep_Silence
                 if (_biteLoading < TicksBeforeBite)
                 {
                     _biteLoading++;
-                    return new CreatureCommand(){target = Position};
+                    return new CreatureCommand(){Target = Position};
                 }
 
                 _biteLoading = 0;
-                return new CreatureCommand(){target = Position, HitAnimation = true};
+                game.Player.ActionInConflict(this, game);
+                return new CreatureCommand(){Target = Position, HitAnimation = true};
             }
 
             if (game.Player.GetNoiseLevel() < distanceToPlayer)
             {
-                return new CreatureCommand() {target = Position};
+                return new CreatureCommand() {Target = Position};
             }
 
-            //TODO: Dijkstra path finder
+            //TODO: Поиск в ширину
             NoiseLevel = NoisePerStep;
             var shiftX = game.Player.Position.X.CompareTo(Position.X);
             var shiftY = game.Player.Position.Y.CompareTo(Position.Y);
@@ -46,7 +48,17 @@ namespace Keep_Silence
                 target.X += shiftX;
             else if (shiftY != 0 && game.IsStepCorrect(Position, new Point(Position.X, Position.Y + shiftY)))
                 target.Y += shiftY;
-            return new CreatureCommand() {target = target}; 
+            if (_moveLoading < TicksBeforeMove)
+            {
+                _moveLoading++; //Todo Make KPACUBO
+                target = Position;
+            }
+            else
+            {
+                _moveLoading = 0;
+            }
+
+            return new CreatureCommand() {Target = target}; 
         }
 
         public void ActionInConflict(ICreature conflictedObject, Game game)
@@ -56,5 +68,9 @@ namespace Keep_Silence
                 game.CurrentRoom.Monsters.Remove(this);
             }
         }
+
+        public string GetImageFileName() => "Monster.png";
+
+        public string GetHitImageFileName() => "MonsterHit.png";
     }
 }

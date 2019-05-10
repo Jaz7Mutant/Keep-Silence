@@ -11,12 +11,14 @@ namespace Keep_Silence
         public Room CurrentRoom;
         public Keys KeyPressed;
         public Player Player;
+        public string CurrentMessage;
         private Dictionary<string, Room> roomList;
 
         public void LoadRooms()
         {
             roomList = RoomLoader.GetRoomsFromDirectory();
             CurrentRoom = roomList.First().Value;
+            Player = new Player() {Position = new Point(4,2)};
         }
 
         public void ChangeRoom(string roomName)
@@ -36,7 +38,7 @@ namespace Keep_Silence
 
         public void ShowMessage(string message)
         {
-            throw new NotImplementedException();
+            CurrentMessage = message;
         }
 
         public double GetDistanceBetweenPoints(Point first, Point second) =>

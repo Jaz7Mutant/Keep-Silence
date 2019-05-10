@@ -68,7 +68,6 @@ namespace Keep_Silence
                     chest.Message = chestData[2];
                     chestsCounter++;
                 }
-
             }
 
             var monsters = monstersData
