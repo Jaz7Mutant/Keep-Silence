@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -53,82 +54,14 @@ namespace Keep_Silence
         protected override void OnKeyUp(KeyEventArgs e)
         {
             pressedKeys.Clear();
-            //pressedKeys.Remove(e.KeyCode);
+            pressedKeys.Remove(e.KeyCode);
             game.KeyPressed = pressedKeys.Any() ? pressedKeys.Min() : Keys.None;
         }
 
-
-        //TODO AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            e.Graphics.TranslateTransform(0, GameState.CellSize);
-            e.Graphics.FillRectangle(
-                Brushes.Aqua, 0, 0, GameState.CellSize * game.CurrentRoom.Width,
-                GameState.CellSize * game.CurrentRoom.Height);
-            for (var x = 0; x < game.CurrentRoom.Map.GetLength(0); x++)
-                for (var y = 0; y < game.CurrentRoom.Map.GetLength(1); y++)
-                {
-                    var environment = game.CurrentRoom.Map[x, y];
-                    e.Graphics.DrawImage(bitmaps[environment.GetImageFileName()],
-                        gameState.ConvertPointToImageSize(new Point(x, y)));
-                }
-
-            foreach (var a in gameState.Animations)
-            {
-                if (a.Creature is Player )
-                {
-                    var image = a.HitAnimation
-                        ? bitmaps[a.Creature.GetHitImageFileName()]
-                        : bitmaps[a.Creature.GetImageFileName()];
-                    if (game.Player.ChangedDirection)
-                        image.RotateFlip(GetRotate(game.Player.Direction));
-                    e.Graphics.DrawImage(image, a.Location);
-                }
-
-                if (a.Creature is Monster)
-                {
-                    var image = a.HitAnimation
-                        ? bitmaps[a.Creature.GetHitImageFileName()]
-                        : bitmaps[a.Creature.GetImageFileName()];
-                    //if (game.Player.ChangedDirection)
-                    //    image.RotateFlip(GetRotate(game.Player.Direction)); //TODO
-                    e.Graphics.DrawImage(image, a.Location);
-                }
-            }
-
-            e.Graphics.ResetTransform();
-
-            if (game.CurrentMessage != null)
-            {
-                timer.Enabled = false;
-                MessageBox.Show(game.CurrentMessage);
-                timer.Enabled = true;
-                game.CurrentMessage = null;
-            }
-
-        }
-
-        private RotateFlipType GetRotate(Directions direction)
-        {
-            switch (direction)
-            {
-                //TODO
-                case Directions.Down:
-                    return RotateFlipType.Rotate180FlipNone;
-                case Directions.Up:
-                    return RotateFlipType.RotateNoneFlipNone;
-                case Directions.Right:
-                    return RotateFlipType.Rotate90FlipNone;
-                case Directions.Left:
-                    return RotateFlipType.Rotate270FlipNone;
-                default:
-                    throw new ArgumentException();
-            }
-        }
+        protected override void OnPaint(PaintEventArgs e) => Drawer.DrawGame(e, game, gameState, bitmaps, timer);
 
         private void TimerTick(object sender, EventArgs args)
         {
-            //Todo вызывать gameState и делать магию
             gameState.PerformAct(game);
             tickCount++;
             tickCount %= 100;

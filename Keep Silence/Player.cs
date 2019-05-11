@@ -9,13 +9,16 @@ namespace Keep_Silence
         public Point Position;
         public Directions Direction = Directions.Right;
         public bool ChangedDirection;
-        public double NoiseLevel;
+        public int NoiseLevel;
         public double HealthPoints;
-        private const double IdleNoiseLevel = 2;
-        private const double NoisePerStep = 10;
-        private const double NoisePerHit = 13;
+        private int ticks;
+        public int LightningRadius = 3;
+        private const int TicksBeforeIdle = 7;
+        private const int IdleNoiseLevel = 2;
+        private const int NoisePerStep = 10;
+        private const int NoisePerHit = 13;
 
-        public double GetNoiseLevel() => NoiseLevel;
+        public int GetNoiseLevel() => NoiseLevel;
 
         public CreatureCommand MakeStep(Game game)
         {
@@ -80,8 +83,17 @@ namespace Keep_Silence
                 shiftY = 0;
 
             if (shiftX != 0 || shiftY != 0)
+            {
                 NoiseLevel = NoisePerStep;
-            else NoiseLevel = IdleNoiseLevel;
+                ticks = 0;
+            }
+            else
+            {
+                if (ticks > TicksBeforeIdle)
+                NoiseLevel = IdleNoiseLevel;
+            }
+
+            ticks++;
 
             return new CreatureCommand
             {
@@ -93,7 +105,7 @@ namespace Keep_Silence
         public void ChangeHealthPoints(double points, Game game)
         {
             HealthPoints += points;
-            HealthPoints %= 100;
+            HealthPoints = HealthPoints >= 100 ? 100 : HealthPoints;
             if (HealthPoints <= 0)
                 game.GameOver();
         }
@@ -137,6 +149,7 @@ namespace Keep_Silence
 
         private void MakeHit(Game game)
         {
+            ticks = 0;
             NoiseLevel = NoisePerHit;
             var hitPoint = GetHitPoint();
             var target = game.CurrentRoom.Monsters.Find(x => x.Position == hitPoint);

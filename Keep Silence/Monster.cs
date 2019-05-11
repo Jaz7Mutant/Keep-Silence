@@ -5,39 +5,39 @@ namespace Keep_Silence
     public class Monster : ICreature
     {
         public Point Position;
-        public double NoiseLevel;
-        private int _biteLoading;
-        private int _moveLoading;
-        private const double IdleNoiseLevel = 5;
+        public int NoiseLevel;
+        private int biteLoading;
+        private int moveLoading;
+        private double distanceToPlayer;
+        private const int IdleNoiseLevel = 3;
         private const int TicksBeforeBite = 10; //Todo Причесать константы
         private const int TicksBeforeMove = 5;
-        private const double NoisePerStep = 10;
+        private const int NoisePerStep = 10;
         public const double DamageToPlayer = 60;
 
-        public double GetNoiseLevel() => NoiseLevel;
+        public int GetNoiseLevel() => distanceToPlayer > NoiseLevel ? 0 : NoiseLevel;
 
         public CreatureCommand MakeStep(Game game)
         {
             NoiseLevel = IdleNoiseLevel;
-            var distanceToPlayer = game.GetDistanceBetweenPoints(Position, game.Player.Position);
+            distanceToPlayer = game.GetDistanceBetweenPoints(Position, game.Player.Position);
 
             if (distanceToPlayer <= 1)
             {
-                if (_biteLoading < TicksBeforeBite)
+                if (biteLoading < TicksBeforeBite)
                 {
-                    _biteLoading++;
-                    return new CreatureCommand(){Target = Position};
+                    biteLoading++;
+                    return new CreatureCommand {Target = Position};
                 }
 
-                _biteLoading = 0;
+                biteLoading = 0;
                 game.Player.ActionInConflict(this, game);
-                return new CreatureCommand(){Target = Position, HitAnimation = true};
+                return new CreatureCommand{Target = Position, HitAnimation = true};
             }
 
+            biteLoading = 0;
             if (game.Player.GetNoiseLevel() < distanceToPlayer)
-            {
-                return new CreatureCommand() {Target = Position};
-            }
+                return new CreatureCommand {Target = Position};
 
             //TODO: Поиск в ширину
             NoiseLevel = NoisePerStep;
@@ -48,17 +48,17 @@ namespace Keep_Silence
                 target.X += shiftX;
             else if (shiftY != 0 && game.IsStepCorrect(Position, new Point(Position.X, Position.Y + shiftY)))
                 target.Y += shiftY;
-            if (_moveLoading < TicksBeforeMove)
+            if (moveLoading < TicksBeforeMove)
             {
-                _moveLoading++; //Todo Make KPACUBO
+                moveLoading++; //Todo Make KPACUBO
                 target = Position;
             }
             else
             {
-                _moveLoading = 0;
+                moveLoading = 0;
             }
 
-            return new CreatureCommand() {Target = target}; 
+            return new CreatureCommand {Target = target}; 
         }
 
         public void ActionInConflict(ICreature conflictedObject, Game game)
