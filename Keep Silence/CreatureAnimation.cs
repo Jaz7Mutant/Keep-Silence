@@ -8,5 +8,6 @@ namespace Keep_Silence
         public Point Location;
         public Point TargetLogicalLocation;
         public ICreature Creature;
+        public CreatureCommand Command;
     }
 }

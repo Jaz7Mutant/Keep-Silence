@@ -6,5 +6,6 @@ namespace Keep_Silence
     {
         public Point Target;
         public bool HitAnimation;
+        public RotateFlipType Rotate;
     }
 }

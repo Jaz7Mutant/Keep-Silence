@@ -6,6 +6,8 @@ namespace Keep_Silence
     {
         public Point Position;
         public int NoiseLevel;
+        private double Visibility;
+        private Directions Direction = Directions.Right;
         private int biteLoading;
         private int moveLoading;
         private double distanceToPlayer;
@@ -13,14 +15,18 @@ namespace Keep_Silence
         private const int TicksBeforeBite = 10; //Todo Причесать константы
         private const int TicksBeforeMove = 5;
         private const int NoisePerStep = 10;
-        public const double DamageToPlayer = 60;
+        public const double DamageToPlayer = -60;
 
         public int GetNoiseLevel() => distanceToPlayer > NoiseLevel ? 0 : NoiseLevel;
+
+        public double GetVisibility() => Visibility;
 
         public CreatureCommand MakeStep(Game game)
         {
             NoiseLevel = IdleNoiseLevel;
             distanceToPlayer = game.GetDistanceBetweenPoints(Position, game.Player.Position);
+
+            Visibility = distanceToPlayer <= game.Player.LightningRadius ? 100 : 0;
 
             if (distanceToPlayer <= 1)
             {
@@ -58,7 +64,17 @@ namespace Keep_Silence
                 moveLoading = 0;
             }
 
-            return new CreatureCommand {Target = target}; 
+            var newDirection = shiftX == 0
+                ? shiftY > 0
+                    ? Directions.Down
+                    : Directions.Up
+                : shiftX > 0
+                    ? Directions.Right
+                    : Directions.Left;
+            var turn = Game.GetImageRotation(newDirection, Direction);
+            Direction = newDirection == Directions.None ? Direction : newDirection;
+
+            return new CreatureCommand {Target = target, Rotate = turn}; 
         }
 
         public void ActionInConflict(ICreature conflictedObject, Game game)

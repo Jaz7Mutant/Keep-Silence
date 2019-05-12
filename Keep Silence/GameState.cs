@@ -16,23 +16,20 @@ namespace Keep_Silence
             {
                 HitAnimation = playerStep.HitAnimation, Location = ConvertPointToImageSize(game.Player.Position),
                 TargetLogicalLocation = ConvertPointToImageSize(playerStep.Target),
-                Creature = game.Player
+                Creature = game.Player,
+                Command = playerStep
             });
             game.Player.Position = playerStep.Target;
-            //if (playerStep.HitAnimation && game.CurrentRoom.Monsters.Find(x => x.Position == playerStep.Target) != null)
-            //{
-            //    game.CurrentRoom.Monsters.Find(x => x.Position == playerStep.Target).Dead(game.Player, game);
-            //}
+            game.CurrentRoom.LightenNewArea(game.Player.LightningRadius,game.Player.Position);
             foreach (var monster in game.CurrentRoom.Monsters)
             {
                 var monsterStep = monster.MakeStep(game);
-                //if (monsterStep.HitAnimation)
-                //    game.Player.ChangeHealthPoints(monster.DamageToPlayer, game);
                 Animations.Add(new CreatureAnimation
                 {
                     HitAnimation = monsterStep.HitAnimation, Location = ConvertPointToImageSize(monster.Position),
                     TargetLogicalLocation = ConvertPointToImageSize(monsterStep.Target),
-                    Creature = monster
+                    Creature = monster,
+                    Command = monsterStep
                 });
                 monster.Position = monsterStep.Target;
             }

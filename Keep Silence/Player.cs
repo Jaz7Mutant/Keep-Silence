@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace Keep_Silence
 {
     public class Player : ICreature
     {
         public Point Position;
-        public Directions Direction = Directions.Right;
-        public bool ChangedDirection;
+        private Directions Direction = Directions.Right;
         public int NoiseLevel;
         public double HealthPoints;
-        private int ticks;
-        public int LightningRadius = 3;
+        private int ticks;  //todo причесать константы
+        public int LightningRadius = 1;
         private const int TicksBeforeIdle = 7;
         private const int IdleNoiseLevel = 2;
         private const int NoisePerStep = 10;
@@ -20,85 +18,56 @@ namespace Keep_Silence
 
         public int GetNoiseLevel() => NoiseLevel;
 
+        public string GetImageFileName() => "Player.png";
+
+        public string GetHitImageFileName() => "PlayerHit.png";
+
+        //todo Метод для замены фонарика
+        //todo разряжение аккума
+
         public CreatureCommand MakeStep(Game game)
         {
             var shiftX = 0;
             var shiftY = 0;
-            ChangedDirection = false;
-            
-            switch (game.KeyPressed)
+            var newDirection = Directions.None;
+            switch (game.GetPlayerAction())
             {
-                //TODO Убрать Keys, Выделить в метод
-                case Keys.W:
-                    shiftY = -1;
-                    if (Direction != Directions.Up)
-                    { 
-                        ChangedDirection = true;
-                        shiftY = 0;
-                    }
-                    Direction = Directions.Up;
+                case PlayerActions.MoveUp:
+                    shiftY = Direction == Directions.Up ? -1 : 0;
+                    newDirection = Directions.Up;
                     break;
-                case Keys.S:
-                    shiftY = 1;
-                    if (Direction != Directions.Down)
-                    {
-                        ChangedDirection = true;
-                        shiftY = 0;
-                    }
-                    Direction = Directions.Down;
+                case PlayerActions.MoveDown:
+                    shiftY = Direction == Directions.Down ? 1 : 0;
+                    newDirection = Directions.Down;
                     break;
-                case Keys.D:
-                    shiftX = 1;
-                    if (Direction != Directions.Right)
-                    {
-                        ChangedDirection = true;
-                        shiftX = 0;
-                    }
-                    Direction = Directions.Right;
+                case PlayerActions.MoveRight:
+                    shiftX = Direction == Directions.Right ? 1 : 0;
+                    newDirection = Directions.Right;
                     break;
-                case Keys.A:
-                    shiftX = -1;
-                    if (Direction != Directions.Left)
-                    {
-                        ChangedDirection = true;
-                        shiftX = 0;
-                    }
-                    Direction = Directions.Left;
+                case PlayerActions.MoveLeft:
+                    shiftX = Direction == Directions.Left ? -1 : 0;
+                    newDirection = Directions.Left;
                     break;
-
-                case Keys.F:
+                case PlayerActions.Interact:
                     InteractWithEnvironment(game);
                     return new CreatureCommand {HitAnimation = false, Target = Position};
-                case Keys.Escape:
-                    game.Pause();
-                    return new CreatureCommand {HitAnimation = false, Target = Position};
-                case Keys.Space:
+                case PlayerActions.Hit:
                     MakeHit(game);
                     return new CreatureCommand {HitAnimation = true, Target = Position};
             }
-            
             if (!game.IsStepCorrect(Position, new Point(Position.X + shiftX, Position.Y)))
                 shiftX = 0;
             if (!game.IsStepCorrect(Position, new Point(Position.X, Position.Y + shiftY)))
                 shiftY = 0;
-
-            if (shiftX != 0 || shiftY != 0)
-            {
-                NoiseLevel = NoisePerStep;
-                ticks = 0;
-            }
-            else
-            {
-                if (ticks > TicksBeforeIdle)
-                NoiseLevel = IdleNoiseLevel;
-            }
-
-            ticks++;
-
+            var turn = Game.GetImageRotation(newDirection, Direction);
+            Direction = newDirection == Directions.None ? Direction : newDirection;
+            UpdateNoiseLevel(shiftX, shiftY);
+            
             return new CreatureCommand
             {
                 HitAnimation = false,
-                Target = new Point(Position.X + shiftX, Position.Y + shiftY)
+                Target = new Point(Position.X + shiftX, Position.Y + shiftY),
+                Rotate = turn
             };
         }
 
@@ -135,9 +104,20 @@ namespace Keep_Silence
             }
         }
 
-        public string GetImageFileName() => "Player.png";
-
-        public string GetHitImageFileName() => "PlayerHit.png";
+        private void UpdateNoiseLevel(int shiftX, int shiftY)
+        {
+            if (shiftX != 0 || shiftY != 0)
+            {
+                NoiseLevel = NoisePerStep;
+                ticks = 0;
+            }
+            else
+            {
+                if (ticks > TicksBeforeIdle)
+                    NoiseLevel = IdleNoiseLevel;
+            }
+            ticks++;
+        }
 
         private void InteractWithEnvironment(Game game)
         {
