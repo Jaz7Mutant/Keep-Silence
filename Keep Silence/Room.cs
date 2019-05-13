@@ -12,6 +12,10 @@ namespace Keep_Silence
 
         public void LightenNewArea(int radius, Point center)
         {
+            if (radius == 0)
+            {
+                ChangeIlluminationInArea(10, center, 0);
+            }
             ChangeIlluminationInArea(2*radius, center, 0);
             ChangeIlluminationInArea(radius, center, 100);
         }

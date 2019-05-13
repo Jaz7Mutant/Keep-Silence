@@ -62,7 +62,7 @@ namespace Keep_Silence
                 if (map[x, y] is Chest chest)
                 {
                     var chestData = chestsData[chestsCounter].Split('\t');
-                    chest.DeltaPlayerHealthPoints = double.Parse(chestData[0]);
+                    chest.DeltaPlayerHealthPoints = int.Parse(chestData[0]);
                     var pointData = chestData[1].Split();
                     chest.DoorToUnlock = new Point(int.Parse(pointData[0]), int.Parse(pointData[1]));
                     chest.Message = chestData[2];

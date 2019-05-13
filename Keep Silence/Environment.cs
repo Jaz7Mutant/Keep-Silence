@@ -25,21 +25,21 @@ namespace Keep_Silence
     public class Chest : IEnvironment
     {
         public double Illumination { get; set; }
-        public double DeltaPlayerHealthPoints;
+        public int DeltaPlayerHealthPoints;
         public Point DoorToUnlock;
         public string Message;
         private string chestName = "Chest.png";
 
         public void InteractWithPlayer(Game game)
         {
+            game.ShowMessage(Message);
+            Message = null;
             game.Player.ChangeHealthPoints(DeltaPlayerHealthPoints, game);
             DeltaPlayerHealthPoints = 0;
             if (DoorToUnlock.X != -1 && DoorToUnlock.Y != -1)
             {
                 ((Door) game.CurrentRoom.Map[DoorToUnlock.X, DoorToUnlock.Y]).IsOpen = true;
             }
-            game.ShowMessage(Message);
-            Message = null;
             chestName = "OpenChest.png";
         }
 
