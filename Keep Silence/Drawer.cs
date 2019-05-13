@@ -18,7 +18,7 @@ namespace Keep_Silence
                 {
                     var environment = game.CurrentRoom.Map[x, y];
                     var img = bitmaps[environment.GetImageFileName()];
-                    if (environment.Illumination == 0)
+                    if (environment.Illumination < 1)
                         img = bitmaps["Darkness.png"];
                     var imgPos = gameState.ConvertPointToImageSize(new Point(x, y));
                     e.Graphics.DrawImage(img, imgPos.X, imgPos.Y, img.Width, img.Height);
@@ -46,14 +46,19 @@ namespace Keep_Silence
                 timer.Enabled = true;
                 game.CurrentMessage = null;
             }
-            e.Graphics.DrawString(game.Player.HealthPoints.ToString(CultureInfo.InvariantCulture), new Font("Vendara", 15), Brushes.DarkMagenta, 0, 0);
+
+            e.Graphics.DrawString(
+                game.Player.GetHealthPoints().ToString(CultureInfo.InvariantCulture) + "\t" +
+                game.Player.GetFlashlightPoints(), new Font("Vendara", 15), Brushes.DarkMagenta, 0, 0);
 
         }
 
         private static void DrawNoiseCircle(PaintEventArgs e, CreatureAnimation a, int tickCount)
         {
             //TODO
-            var radius = a.Creature.GetNoiseLevel() * GameState.CellSize;
+            if (a.Creature.GetNoiseLevel() == 0)
+                return;
+            var radius = (a.Creature.GetNoiseLevel() + 1) * GameState.CellSize;
             //if (tickCount < 25)
             //    radius /= 3;
             //if (tickCount < 50)

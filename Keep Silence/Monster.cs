@@ -6,36 +6,33 @@ namespace Keep_Silence
     {
         public Point Position;
         public int NoiseLevel;
-        private double Visibility;
-        private Directions Direction = Directions.Right;
+        private double visibility;
+        private Directions direction = Directions.Right;
         private int biteLoading;
         private int moveLoading;
         private double distanceToPlayer;
-        private const int IdleNoiseLevel = 3;
-        private const int TicksBeforeBite = 10; //Todo Причесать константы
-        private const int TicksBeforeMove = 5;
-        private const int NoisePerStep = 10;
-        public const double DamageToPlayer = -60;
 
         public int GetNoiseLevel() => distanceToPlayer > NoiseLevel ? 0 : NoiseLevel;
 
-        public double GetVisibility() => Visibility;
+        public double GetVisibility() => visibility;
+
+        public string GetImageFileName() => "Monster.png";
+
+        public string GetHitImageFileName() => "MonsterHit.png";
 
         public CreatureCommand MakeStep(Game game)
         {
-            NoiseLevel = IdleNoiseLevel;
+            NoiseLevel = MonsterSettings.IdleNoiseLevel;
             distanceToPlayer = game.GetDistanceBetweenPoints(Position, game.Player.Position);
-
-            Visibility = distanceToPlayer <= game.Player.LightningRadius ? 100 : 0;
+            visibility = distanceToPlayer <= game.Player.GetLightningRadius() + 1 ? 100 : 0;
 
             if (distanceToPlayer <= 1)
             {
-                if (biteLoading < TicksBeforeBite)
+                if (biteLoading < MonsterSettings.TicksBeforeBite)
                 {
                     biteLoading++;
                     return new CreatureCommand {Target = Position};
                 }
-
                 biteLoading = 0;
                 game.Player.ActionInConflict(this, game);
                 return new CreatureCommand{Target = Position, HitAnimation = true};
@@ -45,35 +42,8 @@ namespace Keep_Silence
             if (game.Player.GetNoiseLevel() < distanceToPlayer)
                 return new CreatureCommand {Target = Position};
 
-            //TODO: Поиск в ширину
-            NoiseLevel = NoisePerStep;
-            var shiftX = game.Player.Position.X.CompareTo(Position.X);
-            var shiftY = game.Player.Position.Y.CompareTo(Position.Y);
-            var target = Position;
-            if (shiftX != 0 && game.IsStepCorrect(Position, new Point(Position.X + shiftX, Position.Y)))
-                target.X += shiftX;
-            else if (shiftY != 0 && game.IsStepCorrect(Position, new Point(Position.X, Position.Y + shiftY)))
-                target.Y += shiftY;
-            if (moveLoading < TicksBeforeMove)
-            {
-                moveLoading++; //Todo Make KPACUBO
-                target = Position;
-            }
-            else
-            {
-                moveLoading = 0;
-            }
-
-            var newDirection = shiftX == 0
-                ? shiftY > 0
-                    ? Directions.Down
-                    : Directions.Up
-                : shiftX > 0
-                    ? Directions.Right
-                    : Directions.Left;
-            var turn = Game.GetImageRotation(newDirection, Direction);
-            Direction = newDirection == Directions.None ? Direction : newDirection;
-
+            NoiseLevel = MonsterSettings.NoisePerStep;
+            GetNextPoint(game, out var target, out var turn);
             return new CreatureCommand {Target = target, Rotate = turn}; 
         }
 
@@ -85,8 +55,33 @@ namespace Keep_Silence
             }
         }
 
-        public string GetImageFileName() => "Monster.png";
+        private void GetNextPoint(Game game, out Point target, out RotateFlipType turn)
+        {
+            //TODO Поиск в ширину
+            var shiftX = game.Player.Position.X.CompareTo(Position.X);
+            var shiftY = game.Player.Position.Y.CompareTo(Position.Y);
+            target = Position;
+            if (shiftX != 0 && game.IsStepCorrect(Position, new Point(Position.X + shiftX, Position.Y)))
+                target.X += shiftX;
+            else if (shiftY != 0 && game.IsStepCorrect(Position, new Point(Position.X, Position.Y + shiftY)))
+                target.Y += shiftY;
+            if (moveLoading < MonsterSettings.TicksBeforeMove)
+            {
+                moveLoading++;
+                target = Position;
+            }
+            else
+                moveLoading = 0;
 
-        public string GetHitImageFileName() => "MonsterHit.png";
+            var newDirection = shiftX == 0
+                ? shiftY > 0
+                    ? Directions.Down
+                    : Directions.Up
+                : shiftX > 0
+                    ? Directions.Right
+                    : Directions.Left;
+            turn = Game.GetImageRotation(newDirection, direction);
+            direction = newDirection == Directions.None ? direction : newDirection;
+        }
     }
 }

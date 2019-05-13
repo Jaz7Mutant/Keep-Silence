@@ -18,7 +18,7 @@ namespace Keep_Silence
         {
             roomList = RoomLoader.GetRoomsFromDirectory();
             CurrentRoom = roomList.First().Value;
-            Player = new Player() {Position = new Point(4,2), HealthPoints = 100};
+            Player = new Player() {Position = new Point(4,2)};
         }
 
         public void ChangeRoom(string roomName)

@@ -25,7 +25,7 @@ namespace Keep_Silence
     public class Chest : IEnvironment
     {
         public double Illumination { get; set; }
-        public double DeltaPlayerHealthPoints;
+        public int DeltaPlayerHealthPoints;
         public Point DoorToUnlock;
         public string Message;
         private string chestName = "Chest.png";
