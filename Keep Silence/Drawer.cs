@@ -1,41 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Keep_Silence
 {
     public static class Drawer
     {
+        private static int noiseCircleRadius;
+
         public static void DrawGame(PaintEventArgs e, Game game, GameState gameState, Dictionary<string,Bitmap> bitmaps, Timer timer, int tickCount)
         {
+            //todo Collect Bitmaps and draw it
             e.Graphics.TranslateTransform(0, GameState.CellSize);
             e.Graphics.FillRectangle(
-                Brushes.Aqua, 0, 0, GameState.CellSize * game.CurrentRoom.Width,
+                Brushes.Black, 0, 0, GameState.CellSize * game.CurrentRoom.Width,
                 GameState.CellSize * game.CurrentRoom.Height);
-            for (var x = 0; x < game.CurrentRoom.Map.GetLength(0); x++)
-                for (var y = 0; y < game.CurrentRoom.Map.GetLength(1); y++)
-                {
-                    var environment = game.CurrentRoom.Map[x, y];
-                    var img = bitmaps[environment.GetImageFileName()];
-                    if (environment.Illumination < 1)
-                        img = bitmaps["Darkness.png"];
-                    var imgPos = gameState.ConvertPointToImageSize(new Point(x, y));
-                    e.Graphics.DrawImage(img, imgPos.X, imgPos.Y, img.Width, img.Height);
-                }
-
-            foreach (var a in gameState.Animations)
-            {
-                bitmaps[a.Creature.GetHitImageFileName()].RotateFlip(a.Command.Rotate);
-                bitmaps[a.Creature.GetImageFileName()].RotateFlip(a.Command.Rotate);
-                var image = a.HitAnimation
-                    ? bitmaps[a.Creature.GetHitImageFileName()]
-                    : bitmaps[a.Creature.GetImageFileName()];
-                if (a.Creature is Monster monster && monster.GetVisibility() < 1)
-                    image = bitmaps["Darkness.png"];
-                e.Graphics.DrawImage(image, a.Location.X, a.Location.Y, image.Width, image.Height);
-                DrawNoiseCircle(e,a, tickCount);
-            }
+            DrawEnvironment(e, game, gameState, bitmaps);
+            DrawCreatures(e, gameState, bitmaps, tickCount);
 
             e.Graphics.ResetTransform();
 
@@ -53,23 +36,55 @@ namespace Keep_Silence
 
         }
 
+        private static void DrawCreatures(PaintEventArgs e, GameState gameState, Dictionary<string, Bitmap> bitmaps, int tickCount)
+        {
+            foreach (var a in gameState.Animations)
+            {
+                bitmaps[a.Creature.GetHitImageFileName()].RotateFlip(a.Command.Rotate);
+                bitmaps[a.Creature.GetImageFileName()].RotateFlip(a.Command.Rotate);
+                var image = a.HitAnimation
+                    ? bitmaps[a.Creature.GetHitImageFileName()]
+                    : bitmaps[a.Creature.GetImageFileName()];
+                DrawNoiseCircle(e, a, tickCount);
+                if (a.Creature is Monster monster && monster.GetVisibility() < 1)
+                    continue;
+                e.Graphics.DrawImage(image, a.Location.X, a.Location.Y, GameState.CellSize, GameState.CellSize);
+                noiseCircleRadius += a.Creature.GetNoiseLevel()*3;
+            }
+        }
+
+        private static void DrawEnvironment(PaintEventArgs e, Game game, GameState gameState, Dictionary<string, Bitmap> bitmaps)
+        {
+            for (var x = 0; x < game.CurrentRoom.Map.GetLength(0); x++)
+                for (var y = 0; y < game.CurrentRoom.Map.GetLength(1); y++)
+                {
+                    var environment = game.CurrentRoom.Map[x, y];
+                    var img = bitmaps[environment.GetImageFileName()];
+                    if (environment.Illumination < 1)
+                        continue;
+
+                    var imgPos = gameState.ConvertPointToImageSize(new Point(x, y));
+                    e.Graphics.DrawImage(img, imgPos.X, imgPos.Y, GameState.CellSize, GameState.CellSize);
+                }
+        }
+
+        
         private static void DrawNoiseCircle(PaintEventArgs e, CreatureAnimation a, int tickCount)
         {
-            //TODO
             if (a.Creature.GetNoiseLevel() == 0)
                 return;
             var radius = (a.Creature.GetNoiseLevel() + 1) * GameState.CellSize;
-            //if (tickCount < 25)
-            //    radius /= 3;
-            //if (tickCount < 50)
-            //    radius /= 2;
+            if (noiseCircleRadius <= radius)
+                radius = noiseCircleRadius;       
+            else
+                noiseCircleRadius = 0;
 
             var circleRectangle = new Rectangle(
                 a.Location.X - (radius - GameState.CellSize) / 2,
                 a.Location.Y - (radius - GameState.CellSize) / 2,
                 radius,
                 radius);
-            e.Graphics.DrawEllipse(new Pen(Color.AliceBlue, 2),
+            e.Graphics.DrawEllipse(new Pen(Color.LightGray, 3),
                 circleRectangle);
         }
     }

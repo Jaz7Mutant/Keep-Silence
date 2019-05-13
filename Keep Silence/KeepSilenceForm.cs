@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Keep_Silence
@@ -19,7 +14,7 @@ namespace Keep_Silence
         private readonly GameState gameState;
         private readonly HashSet<Keys> pressedKeys = new HashSet<Keys>();
         private int tickCount;
-        private readonly Timer timer = new Timer {Interval = 130};
+        private readonly Timer timer = new Timer {Interval = 100};
 
         public KeepSilenceForm(Game game, DirectoryInfo imagesDirectory = null)
         {
@@ -29,6 +24,7 @@ namespace Keep_Silence
                 GameState.CellSize * game.CurrentRoom.Width,
                 GameState.CellSize * game.CurrentRoom.Height + GameState.CellSize);
             FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
             if (imagesDirectory == null)
                 imagesDirectory = new DirectoryInfo(
                     Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Resources", "Images")); ;
