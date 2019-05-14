@@ -6,7 +6,7 @@ namespace Keep_Silence
     public class GameState
     {
         public List<CreatureAnimation> Animations = new List<CreatureAnimation>();
-        public const int CellSize = 32;
+        public static int CellSize = 32;
 
         public void PerformAct(Game game)
         {

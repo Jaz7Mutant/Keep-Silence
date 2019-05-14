@@ -12,7 +12,13 @@ namespace Keep_Silence
         public Keys KeyPressed;
         public Player Player;
         public string CurrentMessage;
+        public bool IsPaused;
+        public bool IsEnd;
         private Dictionary<string, Room> roomList;
+
+        public void GameOver() => IsEnd = true;
+
+        public void Pause() => IsPaused = true;
 
         public void LoadRooms()
         {
@@ -21,19 +27,11 @@ namespace Keep_Silence
             Player = new Player() {Position = new Point(4,2)};
         }
 
-        public void ChangeRoom(string roomName)
+        public void ChangeRoom(Door door)
         {
-            throw new NotImplementedException();
-        }
-
-        public void GameOver()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Pause()
-        {
-            throw new NotImplementedException();
+            CurrentRoom = roomList[door.NextRoomName];
+            Player.Position = door.NextRoomStartPosition;
+            KeyPressed = Keys.None;
         }
 
         public void ShowMessage(string message)
@@ -97,7 +95,7 @@ namespace Keep_Silence
             && InBounds(target)
             && CurrentRoom.Map[target.X, target.Y] is Terrain;
 
-        private bool InBounds(Point point) =>
+        public bool InBounds(Point point) =>
             point.X < CurrentRoom.Width 
             && point.X >= 0 
             && point.Y < CurrentRoom.Height 

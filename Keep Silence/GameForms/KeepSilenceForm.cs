@@ -9,6 +9,7 @@ namespace Keep_Silence
 {
     public partial class KeepSilenceForm : Form
     {
+        public readonly Dictionary<string, Bitmap> menuBitmaps = new Dictionary<string, Bitmap>();
         private readonly Dictionary<string, Bitmap> bitmaps = new Dictionary<string, Bitmap>();
         private readonly Game game;
         private readonly GameState gameState;
@@ -20,16 +21,24 @@ namespace Keep_Silence
         {
             this.game = game;
             gameState = new GameState();
-            ClientSize = new Size(
-                GameState.CellSize * game.CurrentRoom.Width,
-                GameState.CellSize * game.CurrentRoom.Height + GameState.CellSize);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            MaximizeBox = false;
+            ClientSize = new Size(Screen.PrimaryScreen.WorkingArea.Width,
+                Screen.PrimaryScreen.WorkingArea.Height);
+            GameState.CellSize = ClientSize.Width / game.CurrentRoom.Width;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            WindowState = FormWindowState.Maximized;
+
+            SizeChanged += (sender, args) => { GameState.CellSize = ClientSize.Width / game.CurrentRoom.Width; };
+
             if (imagesDirectory == null)
                 imagesDirectory = new DirectoryInfo(
                     Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Resources", "Images")); ;
             foreach (var e in imagesDirectory.GetFiles("*.png"))
                 bitmaps[e.Name] = (Bitmap) Image.FromFile(e.FullName);
+
+            imagesDirectory = new DirectoryInfo(
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Resources", "Menu Images")); ;
+            foreach (var e in imagesDirectory.GetFiles("*.png"))
+                menuBitmaps[e.Name] = (Bitmap)Image.FromFile(e.FullName);
 
             timer.Tick += TimerTick;
             timer.Start();
@@ -55,13 +64,15 @@ namespace Keep_Silence
             game.KeyPressed = pressedKeys.Any() ? pressedKeys.Min() : Keys.None;
         }
 
-        protected override void OnPaint(PaintEventArgs e) => Drawer.DrawGame(e, game, gameState, bitmaps, timer, tickCount);
+        protected override void OnPaint(PaintEventArgs e) => Drawer.DrawGame(e, game, gameState, bitmaps, menuBitmaps, timer, tickCount);
 
         private void TimerTick(object sender, EventArgs args)
         {
             gameState.PerformAct(game);
+            if (game.IsEnd)
+                Close();
             tickCount++;
-            tickCount %= 100;
+            tickCount %= 100;   
             Invalidate();
         }
     }

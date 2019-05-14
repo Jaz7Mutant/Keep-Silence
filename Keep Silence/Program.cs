@@ -13,7 +13,9 @@ namespace Keep_Silence
         {
             var game = new Game();
             game.LoadRooms();
-            Application.Run(new KeepSilenceForm(game));
+            var keepSilenceForm = new KeepSilenceForm(game);
+            //Application.Run(new KeepSilenceForm(game));
+            Application.Run(new MainMenuForm(keepSilenceForm.menuBitmaps, keepSilenceForm));
         }
     }
 }

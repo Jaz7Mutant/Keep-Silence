@@ -9,16 +9,23 @@ namespace Keep_Silence
     public static class Drawer
     {
         private static int noiseCircleRadius;
+        private static System.Windows.Forms.Form pauseMenu;
 
-        public static void DrawGame(PaintEventArgs e, Game game, GameState gameState, Dictionary<string,Bitmap> bitmaps, Timer timer, int tickCount)
+        public static void DrawGame(PaintEventArgs e, Game game, GameState gameState, Dictionary<string,Bitmap> bitmaps, Dictionary<string,Bitmap> menuBitmaps, Timer timer, int tickCount)
         {
             //todo Collect Bitmaps and draw it
-            e.Graphics.TranslateTransform(0, GameState.CellSize);
+            if (game.IsPaused)
+            {
+                timer.Enabled = false;
+                PauseMenu(menuBitmaps, game);
+                timer.Enabled = true;
+            }
+            GameState.CellSize = Screen.PrimaryScreen.WorkingArea.Width / game.CurrentRoom.Width;
+            e.Graphics.TranslateTransform(0, 50);
             e.Graphics.FillRectangle(
-                Brushes.Black, 0, 0, GameState.CellSize * game.CurrentRoom.Width,
-                GameState.CellSize * game.CurrentRoom.Height);
+                Brushes.Black, Screen.PrimaryScreen.WorkingArea);
             DrawEnvironment(e, game, gameState, bitmaps);
-            DrawCreatures(e, gameState, bitmaps, tickCount);
+            DrawCreatures(e, gameState, bitmaps);
 
             e.Graphics.ResetTransform();
 
@@ -32,11 +39,20 @@ namespace Keep_Silence
 
             e.Graphics.DrawString(
                 game.Player.GetHealthPoints().ToString(CultureInfo.InvariantCulture) + "\t" +
-                game.Player.GetFlashlightPoints(), new Font("Vendara", 15), Brushes.DarkMagenta, 0, 0);
+                game.Player.GetFlashlightPoints(), new Font("Vendara", 14), Brushes.DarkMagenta, 0, 0);
 
         }
 
-        private static void DrawCreatures(PaintEventArgs e, GameState gameState, Dictionary<string, Bitmap> bitmaps, int tickCount)
+        private static void PauseMenu(Dictionary<string,Bitmap> menuBitmaps, Game game)
+        {
+            game.KeyPressed = Keys.None;
+            game.IsPaused = false;
+            if (pauseMenu is null)
+                pauseMenu = new PauseForm(menuBitmaps, game);
+            pauseMenu.ShowDialog();
+        }
+
+        private static void DrawCreatures(PaintEventArgs e, GameState gameState, Dictionary<string, Bitmap> bitmaps)
         {
             foreach (var a in gameState.Animations)
             {
@@ -45,7 +61,7 @@ namespace Keep_Silence
                 var image = a.HitAnimation
                     ? bitmaps[a.Creature.GetHitImageFileName()]
                     : bitmaps[a.Creature.GetImageFileName()];
-                DrawNoiseCircle(e, a, tickCount);
+                DrawNoiseCircle(e, a);
                 if (a.Creature is Monster monster && monster.GetVisibility() < 1)
                     continue;
                 e.Graphics.DrawImage(image, a.Location.X, a.Location.Y, GameState.CellSize, GameState.CellSize);
@@ -69,7 +85,7 @@ namespace Keep_Silence
         }
 
         
-        private static void DrawNoiseCircle(PaintEventArgs e, CreatureAnimation a, int tickCount)
+        private static void DrawNoiseCircle(PaintEventArgs e, CreatureAnimation a)
         {
             if (a.Creature.GetNoiseLevel() == 0)
                 return;
