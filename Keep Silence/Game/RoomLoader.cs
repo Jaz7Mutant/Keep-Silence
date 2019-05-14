@@ -13,7 +13,7 @@ namespace Keep_Silence
 
         public static List<string> RoomFileNames = new List<string>
         {
-            //"1",
+            "1",
             "2",
             //"3",
             //"4",
@@ -63,9 +63,11 @@ namespace Keep_Silence
                 {
                     var chestData = chestsData[chestsCounter].Split('\t');
                     chest.DeltaPlayerHealthPoints = int.Parse(chestData[0]);
-                    var pointData = chestData[1].Split();
+                    chest.DeltaPlayerFlashlightPoints = int.Parse(chestData[1]);
+                    chest.NewFlashlightRadius = int.Parse(chestData[2]);
+                    var pointData = chestData[3].Split();
                     chest.DoorToUnlock = new Point(int.Parse(pointData[0]), int.Parse(pointData[1]));
-                    chest.Message = chestData[2];
+                    chest.Message = chestData[4];
                     chestsCounter++;
                 }
             }

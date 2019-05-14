@@ -13,10 +13,9 @@ namespace Keep_Silence
         public void InteractWithPlayer(Game game)
         {
             if (IsOpen)
-            {
-                game.ChangeRoom(NextRoomName);
-                game.Player.Position = NextRoomStartPosition;
-            }
+                game.ChangeRoom(this);
+            else
+                game.ShowMessage("Door is locked");
         }
 
         public string GetImageFileName() => "Door.png";
@@ -28,6 +27,8 @@ namespace Keep_Silence
         public int DeltaPlayerHealthPoints;
         public Point DoorToUnlock;
         public string Message;
+        public int DeltaPlayerFlashlightPoints;
+        public int NewFlashlightRadius;
         private string chestName = "Chest.png";
 
         public void InteractWithPlayer(Game game)
@@ -35,6 +36,8 @@ namespace Keep_Silence
             game.ShowMessage(Message);
             Message = null;
             game.Player.ChangeHealthPoints(DeltaPlayerHealthPoints, game);
+            game.Player.ChangeFlashlightPoints(DeltaPlayerFlashlightPoints);
+            game.Player.ChangeLightningRadius(NewFlashlightRadius);
             DeltaPlayerHealthPoints = 0;
             if (DoorToUnlock.X != -1 && DoorToUnlock.Y != -1)
             {

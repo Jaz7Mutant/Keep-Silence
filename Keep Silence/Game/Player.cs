@@ -147,6 +147,8 @@ namespace Keep_Silence
         private void InteractWithEnvironment(Game game)
         {
             var hitPoint = GetHitPoint();
+            if (!game.InBounds(hitPoint))
+                return;
             if (game.CurrentRoom.Map[hitPoint.X, hitPoint.Y] is Chest
                 || game.CurrentRoom.Map[hitPoint.X, hitPoint.Y] is Door)
                 game.CurrentRoom.Map[hitPoint.X, hitPoint.Y].InteractWithPlayer(game);

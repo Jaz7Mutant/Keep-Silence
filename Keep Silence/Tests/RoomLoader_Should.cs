@@ -59,6 +59,8 @@ namespace Keep_Silence.Tests
             Assert.True(rawChest is Chest);
             var chest = (Chest) rawChest;
             Assert.AreEqual(chest.DeltaPlayerHealthPoints, 10);
+            Assert.AreEqual(chest.DeltaPlayerFlashlightPoints, 20);
+            Assert.AreEqual(chest.NewFlashlightRadius, 30);
             Assert.AreEqual(chest.DoorToUnlock, new Point(-1,-1));
             Assert.AreEqual(chest.Message, "TestMessage");
         }
