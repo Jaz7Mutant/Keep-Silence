@@ -64,7 +64,7 @@ namespace Keep_Silence
                     var chestData = chestsData[chestsCounter].Split('\t');
                     chest.DeltaPlayerHealthPoints = int.Parse(chestData[0]);
                     chest.DeltaPlayerFlashlightPoints = int.Parse(chestData[1]);
-                    chest.NewFlashlightRadius = int.Parse(chestData[2]);
+                    chest.DeltaFlashlightRadius = int.Parse(chestData[2]);
                     var pointData = chestData[3].Split();
                     chest.DoorToUnlock = new Point(int.Parse(pointData[0]), int.Parse(pointData[1]));
                     chest.Message = chestData[4];

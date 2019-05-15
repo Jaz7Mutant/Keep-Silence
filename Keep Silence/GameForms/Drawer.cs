@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Keep_Silence.GameForms;
 
 namespace Keep_Silence
 {
     public static class Drawer
     {
         private static int noiseCircleRadius;
-        private static System.Windows.Forms.Form pauseMenu;
+        private static Form pauseMenu;
 
         public static void DrawGame(PaintEventArgs e, Game game, GameState gameState, Dictionary<string,Bitmap> bitmaps, Dictionary<string,Bitmap> menuBitmaps, Timer timer, int tickCount)
         {
@@ -32,7 +32,9 @@ namespace Keep_Silence
             if (game.CurrentMessage != null)
             {
                 timer.Enabled = false;
-                MessageBox.Show(game.CurrentMessage);
+                var message = new MessageForm(game.CurrentMessage, menuBitmaps);
+                message.StartPosition = FormStartPosition.CenterParent;
+                message.ShowDialog();
                 timer.Enabled = true;
                 game.CurrentMessage = null;
             }
@@ -47,8 +49,8 @@ namespace Keep_Silence
         {
             game.KeyPressed = Keys.None;
             game.IsPaused = false;
-            if (pauseMenu is null)
-                pauseMenu = new PauseForm(menuBitmaps, game);
+            pauseMenu = new PauseForm(menuBitmaps, game);
+            pauseMenu.StartPosition = FormStartPosition.CenterParent;
             pauseMenu.ShowDialog();
         }
 

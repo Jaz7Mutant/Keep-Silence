@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Keep_Silence
 {
@@ -12,6 +13,7 @@ namespace Keep_Silence
 
         public void InteractWithPlayer(Game game)
         {
+            game.KeyPressed = Keys.None;
             if (IsOpen)
                 game.ChangeRoom(this);
             else
@@ -28,7 +30,7 @@ namespace Keep_Silence
         public Point DoorToUnlock;
         public string Message;
         public int DeltaPlayerFlashlightPoints;
-        public int NewFlashlightRadius;
+        public int DeltaFlashlightRadius;
         private string chestName = "Chest.png";
 
         public void InteractWithPlayer(Game game)
@@ -37,8 +39,12 @@ namespace Keep_Silence
             Message = null;
             game.Player.ChangeHealthPoints(DeltaPlayerHealthPoints, game);
             game.Player.ChangeFlashlightPoints(DeltaPlayerFlashlightPoints);
-            game.Player.ChangeLightningRadius(NewFlashlightRadius);
+            game.Player.ChangeLightningRadius(DeltaFlashlightRadius);
             DeltaPlayerHealthPoints = 0;
+            DeltaPlayerFlashlightPoints = 0;
+            DeltaFlashlightRadius = 0;
+            DeltaPlayerHealthPoints = 0;
+            game.KeyPressed = Keys.None;
             if (DoorToUnlock.X != -1 && DoorToUnlock.Y != -1)
             {
                 ((Door) game.CurrentRoom.Map[DoorToUnlock.X, DoorToUnlock.Y]).IsOpen = true;
