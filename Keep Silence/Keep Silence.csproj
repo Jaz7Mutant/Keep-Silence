@@ -58,6 +58,9 @@
     <Compile Include="GameForms\MainMenuForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GameForms\MessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Game\Directions.cs" />
     <Compile Include="GameForms\Drawer.cs" />
     <Compile Include="Game\Environment.cs" />

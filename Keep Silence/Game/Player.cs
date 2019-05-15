@@ -82,8 +82,8 @@ namespace Keep_Silence
 
         public void ChangeLightningRadius(int radius)
         {
-            if (radius < 0) throw new ArgumentException();
-            lightningRadius = radius;
+            lightningRadius += radius;
+            lightningRadius = lightningRadius <= 0 ? 0 : lightningRadius;
         }
 
         public void ChangeFlashlightPoints(double points)
@@ -109,7 +109,7 @@ namespace Keep_Silence
             //TODO Добавить мигание
             ChangeFlashlightPoints(PlayerSettings.FlashlightChargeDecreasePerTick);
             if (flashlightPoints < 0.3)
-                ChangeLightningRadius(0);
+                ChangeLightningRadius(-1000);
         }
 
         private Point GetHitPoint()

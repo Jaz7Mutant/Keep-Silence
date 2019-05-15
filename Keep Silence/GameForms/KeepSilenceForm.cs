@@ -24,8 +24,9 @@ namespace Keep_Silence
             ClientSize = new Size(Screen.PrimaryScreen.WorkingArea.Width,
                 Screen.PrimaryScreen.WorkingArea.Height);
             GameState.CellSize = ClientSize.Width / game.CurrentRoom.Width;
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
+            //TopMost = true;
 
             SizeChanged += (sender, args) => { GameState.CellSize = ClientSize.Width / game.CurrentRoom.Width; };
 
@@ -70,7 +71,11 @@ namespace Keep_Silence
         {
             gameState.PerformAct(game);
             if (game.IsEnd)
+            {
+                timer.Stop();
                 Close();
+            }
+
             tickCount++;
             tickCount %= 100;   
             Invalidate();
