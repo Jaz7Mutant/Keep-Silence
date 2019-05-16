@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Keep_Silence.GameForms;
 
 namespace Keep_Silence
 {
@@ -21,12 +22,13 @@ namespace Keep_Silence
         {
             this.game = game;
             gameState = new GameState();
-            ClientSize = new Size(Screen.PrimaryScreen.WorkingArea.Width,
-                Screen.PrimaryScreen.WorkingArea.Height);
-            GameState.CellSize = ClientSize.Width / game.CurrentRoom.Width;
+            ClientSize = new Size(Screen.PrimaryScreen.Bounds.Width,
+                Screen.PrimaryScreen.Bounds.Height);
+            //GameState.CellSize = game.CurrentRoom.Height > game.CurrentRoom.Width
+            //    ? (ClientSize.Height - 50) / this.game.CurrentRoom.Height
+            //    : ClientSize.Width / this.game.CurrentRoom.Width;
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
-            //TopMost = true;
 
             SizeChanged += (sender, args) => { GameState.CellSize = ClientSize.Width / game.CurrentRoom.Width; };
 
@@ -73,6 +75,8 @@ namespace Keep_Silence
             if (game.IsEnd)
             {
                 timer.Stop();
+                var endGameForm = new GameOverForm(menuBitmaps) {StartPosition = FormStartPosition.CenterParent};
+                endGameForm.ShowDialog();
                 Close();
             }
 

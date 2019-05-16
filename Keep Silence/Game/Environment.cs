@@ -17,7 +17,7 @@ namespace Keep_Silence
             if (IsOpen)
                 game.ChangeRoom(this);
             else
-                game.ShowMessage("Door is locked");
+                game.ShowMessage("Дверь закрыта");
         }
 
         public string GetImageFileName() => "Door.png";
@@ -27,6 +27,7 @@ namespace Keep_Silence
     {
         public double Illumination { get; set; }
         public int DeltaPlayerHealthPoints;
+        public string RoomNameWhereUnlockDoor;
         public Point DoorToUnlock;
         public string Message;
         public int DeltaPlayerFlashlightPoints;
@@ -47,7 +48,7 @@ namespace Keep_Silence
             game.KeyPressed = Keys.None;
             if (DoorToUnlock.X != -1 && DoorToUnlock.Y != -1)
             {
-                ((Door) game.CurrentRoom.Map[DoorToUnlock.X, DoorToUnlock.Y]).IsOpen = true;
+                ((Door) game.RoomList[RoomNameWhereUnlockDoor].Map[DoorToUnlock.X, DoorToUnlock.Y]).IsOpen = true;
             }
             chestName = "OpenChest.png";
         }
