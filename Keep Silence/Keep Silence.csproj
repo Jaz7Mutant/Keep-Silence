@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NUnit.3.11.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,7 +35,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,23 +55,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CreatureAnimation.cs" />
-    <Compile Include="CreatureCommand.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="KeepSilenceForm.cs">
+    <Compile Include="GameForms\MainMenuForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="KeepSilenceForm.Designer.cs">
+    <Compile Include="GameForms\MessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Game\Directions.cs" />
+    <Compile Include="GameForms\Drawer.cs" />
+    <Compile Include="Game\Environment.cs" />
+    <Compile Include="Game\CreatureAnimation.cs" />
+    <Compile Include="Game\CreatureCommand.cs" />
+    <Compile Include="Game\Game.cs" />
+    <Compile Include="GameForms\KeepSilenceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GameForms\KeepSilenceForm.Designer.cs">
       <DependentUpon>KeepSilenceForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameState.cs" />
-    <Compile Include="IEnvironment.cs" />
-    <Compile Include="ICreature.cs" />
-    <Compile Include="Monster.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Game\GameState.cs" />
+    <Compile Include="Game\IEnvironment.cs" />
+    <Compile Include="Game\ICreature.cs" />
+    <Compile Include="Game\Monster.cs" />
+    <Compile Include="Game\MonsterSettings.cs" />
+    <Compile Include="GameForms\PauseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Game\Player.cs" />
+    <Compile Include="GameForms\PlayerActions.cs" />
+    <Compile Include="Game\PlayerSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Room.cs" />
+    <Compile Include="Game\Room.cs" />
+    <Compile Include="Game\RoomLoader.cs" />
+    <Compile Include="Tests\RoomLoader_Should.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -72,6 +98,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -85,5 +112,40 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\Images\Chest.png" />
+    <Content Include="Resources\Images\Darkness.png" />
+    <Content Include="Resources\Images\Door.png" />
+    <Content Include="Resources\Images\Monster.png" />
+    <Content Include="Resources\Images\MonsterHit.png" />
+    <Content Include="Resources\Images\OpenChest.png" />
+    <Content Include="Resources\Images\Player.png" />
+    <Content Include="Resources\Images\PlayerHit.png" />
+    <Content Include="Resources\Images\Terrain.png" />
+    <Content Include="Resources\Images\Wall.png" />
+    <Content Include="Resources\Menu Images\BackToMainMenuButton.png" />
+    <Content Include="Resources\Menu Images\ExitButton.png" />
+    <Content Include="Resources\Menu Images\MainMenuBackground.png" />
+    <Content Include="Resources\Menu Images\PauseBackground.png" />
+    <Content Include="Resources\Menu Images\ResumeButton.png" />
+    <Content Include="Resources\Menu Images\StartGameButton.png" />
+    <Content Include="Resources\Rooms\1.txt" />
+    <Content Include="Resources\Rooms\2.txt" />
+    <Content Include="Resources\Rooms\3.txt" />
+    <Content Include="Resources\Rooms\4.txt" />
+    <Content Include="Resources\Rooms\5.txt" />
+    <Content Include="Tests\TestRoom_1.txt" />
+    <Content Include="Tests\TestRoom_NoMonsters.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.11.0\build\NUnit.props'))" />
+  </Target>
 </Project>
