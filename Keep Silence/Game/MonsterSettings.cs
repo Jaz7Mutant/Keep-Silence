@@ -3,9 +3,9 @@
     public class MonsterSettings
     {
         public const int IdleNoiseLevel = 3;
-        public const int TicksBeforeBite = 10;
-        public const int TicksBeforeMove = 2;
-        public const int NoisePerStep = 3;
-        public const int DamageToPlayer = -60;
+        public const int TicksBeforeBite = 6;
+        public const int TicksBeforeMove = 1;
+        public const int NoisePerStep = 4;
+        public const int DamageToPlayer = -20;
     }
 }

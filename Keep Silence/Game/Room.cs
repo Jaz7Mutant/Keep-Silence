@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace Keep_Silence
@@ -16,7 +17,7 @@ namespace Keep_Silence
             {
                 ChangeIlluminationInArea(10, center, 0);
             }
-            ChangeIlluminationInArea(2*radius, center, 0);
+            ChangeIlluminationInArea(Math.Max(Width,Height), center, 0);
             ChangeIlluminationInArea(radius, center, 100);
         }
 
@@ -26,11 +27,17 @@ namespace Keep_Silence
             {
                 for (var j = -radius; j <= radius; j++)
                 {
+                    var newIllumination = illumination;
+                    if (illumination > 0 && (i == radius || j == radius || i == -radius || j == -radius))
+                    {
+                        newIllumination = 50;
+                    }
+
                     var x = center.X + i;
                     var y = center.Y + j;
                     if (x < 0 || y < 0 || x >= Width || y >= Height)
                         continue;
-                    Map[x, y].Illumination = illumination;
+                    Map[x, y].Illumination = newIllumination;
                 }
             }
         }

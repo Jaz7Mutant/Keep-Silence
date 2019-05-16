@@ -20,7 +20,11 @@ namespace Keep_Silence
                 PauseMenu(menuBitmaps, game);
                 timer.Enabled = true;
             }
-            GameState.CellSize = Screen.PrimaryScreen.WorkingArea.Width / game.CurrentRoom.Width;
+
+            //GameState.CellSize = 32;
+            GameState.CellSize = game.CurrentRoom.Height < game.CurrentRoom.Width
+                ? (Screen.PrimaryScreen.Bounds.Height - 50) / game.CurrentRoom.Height
+                : Screen.PrimaryScreen.Bounds.Width / game.CurrentRoom.Width;
             e.Graphics.TranslateTransform(0, 50);
             e.Graphics.FillRectangle(
                 Brushes.Black, Screen.PrimaryScreen.WorkingArea);
@@ -40,7 +44,7 @@ namespace Keep_Silence
             }
 
             e.Graphics.DrawString(
-                game.Player.GetHealthPoints().ToString(CultureInfo.InvariantCulture) + "\t" +
+                "Здоровье: " + ((int)game.Player.GetHealthPoints()) + "\t" + "Заряд фонарика: " + 
                 game.Player.GetFlashlightPoints(), new Font("Vendara", 14), Brushes.DarkMagenta, 0, 0);
 
         }
@@ -49,8 +53,7 @@ namespace Keep_Silence
         {
             game.KeyPressed = Keys.None;
             game.IsPaused = false;
-            pauseMenu = new PauseForm(menuBitmaps, game);
-            pauseMenu.StartPosition = FormStartPosition.CenterParent;
+            pauseMenu = new PauseForm(menuBitmaps, game) {StartPosition = FormStartPosition.CenterParent};
             pauseMenu.ShowDialog();
         }
 
@@ -80,9 +83,14 @@ namespace Keep_Silence
                     var img = bitmaps[environment.GetImageFileName()];
                     if (environment.Illumination < 1)
                         continue;
-
                     var imgPos = gameState.ConvertPointToImageSize(new Point(x, y));
-                    e.Graphics.DrawImage(img, imgPos.X, imgPos.Y, GameState.CellSize, GameState.CellSize);
+                    var delta = GameState.CellSize / 32;
+                    e.Graphics.DrawImage(img, new Rectangle(imgPos.X, imgPos.Y, GameState.CellSize + delta, GameState.CellSize + delta));
+                    if (environment.Illumination < 100)
+                    {
+                        var solidBrush = new SolidBrush(Color.FromArgb(200, 0, 0, 0));
+                        e.Graphics.FillRectangle(solidBrush, imgPos.X, imgPos.Y, GameState.CellSize + delta, GameState.CellSize + delta);
+                    }
                 }
         }
 

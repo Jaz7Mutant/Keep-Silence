@@ -22,7 +22,7 @@ namespace Keep_Silence
                 BackgroundImageLayout = ImageLayout.Stretch,
                 Image = keepSilenceForm.menuBitmaps["StartGameButton.png"],
                 Location = new Point(2 * ClientSize.Width / 5, 3 * ClientSize.Height / 9),
-                Size = new Size(ClientSize.Width / 5, ClientSize.Height / 10)
+                Size = new Size(ClientSize.Width / 5, ClientSize.Height / 10),
             };
             startGameButton.Click += (sender, args) =>
             {
@@ -37,7 +37,7 @@ namespace Keep_Silence
                 BackgroundImageLayout = ImageLayout.Stretch,
                 Image = keepSilenceForm.menuBitmaps["ExitButton.png"],
                 Location = new Point(startGameButton.Left, startGameButton.Bottom + ClientSize.Height / 9),
-                Size = startGameButton.Size
+                Size = startGameButton.Size,
             };
             exitButton.Click += (sender, args) => Close();
 

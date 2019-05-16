@@ -13,8 +13,20 @@ namespace Keep_Silence
 
         public static List<string> RoomFileNames = new List<string>
         {
-            "1",
-            "2",
+            "OfL2",
+            "OfHall",
+            "OfL1",
+            "OfL3",
+            "OfL4",
+            "OfM1",
+            "OfM2",
+            "OfM3",
+            "OfM4",
+            "OfR1",
+            "OfR2",
+            "OfR3",
+            "OfR4",
+            "Lift",
             //"3",
             //"4",
             //"5",
@@ -65,9 +77,10 @@ namespace Keep_Silence
                     chest.DeltaPlayerHealthPoints = int.Parse(chestData[0]);
                     chest.DeltaPlayerFlashlightPoints = int.Parse(chestData[1]);
                     chest.DeltaFlashlightRadius = int.Parse(chestData[2]);
-                    var pointData = chestData[3].Split();
+                    chest.RoomNameWhereUnlockDoor = chestData[3];
+                    var pointData = chestData[4].Split();
                     chest.DoorToUnlock = new Point(int.Parse(pointData[0]), int.Parse(pointData[1]));
-                    chest.Message = chestData[4];
+                    chest.Message = chestData[5];
                     chestsCounter++;
                 }
             }

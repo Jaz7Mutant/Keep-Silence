@@ -8,14 +8,14 @@ namespace Keep_Silence
         public Point Position;
         private Directions direction = Directions.Right;
         private int noiseLevel;
-        private int healthPoints = 100;
+        private double healthPoints = 100;
         private int ticks; 
         private int lightningRadius = 1;
         private double flashlightPoints = 100;
 
         public int GetNoiseLevel() => noiseLevel;
 
-        public int GetHealthPoints() => healthPoints;
+        public double GetHealthPoints() => healthPoints;
 
         public int GetLightningRadius() => lightningRadius;
 
@@ -33,19 +33,23 @@ namespace Keep_Silence
             switch (game.GetPlayerAction())
             {
                 case PlayerActions.MoveUp:
-                    shiftY = direction == Directions.Up ? -1 : 0;
+                    //shiftY = direction == Directions.Up ? -1 : 0;
+                    shiftY = -1;
                     newDirection = Directions.Up;
                     break;
                 case PlayerActions.MoveDown:
-                    shiftY = direction == Directions.Down ? 1 : 0;
+                    //shiftY = direction == Directions.Down ? 1 : 0;
+                    shiftY = 1;
                     newDirection = Directions.Down;
                     break;
                 case PlayerActions.MoveRight:
-                    shiftX = direction == Directions.Right ? 1 : 0;
+                    //shiftX = direction == Directions.Right ? 1 : 0;
+                    shiftX = 1;
                     newDirection = Directions.Right;
                     break;
                 case PlayerActions.MoveLeft:
-                    shiftX = direction == Directions.Left ? -1 : 0;
+                    //shiftX = direction == Directions.Left ? -1 : 0;
+                    shiftX = -1;
                     newDirection = Directions.Left;
                     break;
                 case PlayerActions.Interact:
@@ -72,7 +76,7 @@ namespace Keep_Silence
             };
         }
 
-        public void ChangeHealthPoints(int points, Game game)
+        public void ChangeHealthPoints(double points, Game game)
         {
             healthPoints += points;
             healthPoints = healthPoints >= 100 ? 100 : healthPoints;
@@ -94,6 +98,8 @@ namespace Keep_Silence
                 : flashlightPoints < 0 
                     ? 0 
                     : flashlightPoints;
+            if (lightningRadius == 0 && flashlightPoints > 0)
+                lightningRadius = 1;
         }
 
         public void ActionInConflict(ICreature conflictedObject, Game game)

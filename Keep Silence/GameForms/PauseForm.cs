@@ -12,14 +12,15 @@ namespace Keep_Silence
             ClientSize = new Size(Screen.PrimaryScreen.Bounds.Width/2, Screen.PrimaryScreen.Bounds.Height/2);
             FormBorderStyle = FormBorderStyle.None;
             BackgroundImage = menuBitmaps["PauseBackground.png"];
-            BackgroundImageLayout = ImageLayout.Stretch;
+            BackgroundImageLayout = ImageLayout.Tile;
 
             var resumeButton = new Button
             {
                 Image = menuBitmaps["ResumeButton.png"],
                 BackgroundImageLayout = ImageLayout.Stretch,
                 Location = new Point(2 * ClientSize.Width / 5, 3 * ClientSize.Height / 9),
-                Size = new Size(ClientSize.Width / 5, ClientSize.Height / 10)
+                Size = new Size(ClientSize.Width / 5, ClientSize.Height / 10),
+                FlatStyle = FlatStyle.Popup
             };
             resumeButton.Click += (sender, args) => Close();
 
@@ -29,7 +30,7 @@ namespace Keep_Silence
                 Image = menuBitmaps["BackToMainMenuButton.png"],
                 BackgroundImageLayout = ImageLayout.Stretch,
                 Location = new Point(resumeButton.Left, resumeButton.Bottom + ClientSize.Height/9),
-               
+                FlatStyle = FlatStyle.Popup
             };
             backToMainMenuButton.Click += (sender, args) =>
             {

@@ -11,7 +11,7 @@ namespace Keep_Silence
         public void PerformAct(Game game)
         {
             Animations.Clear();
-            game.CurrentRoom.LightenNewArea(game.Player.GetLightningRadius(),
+            game.CurrentRoom.LightenNewArea(game.Player.GetLightningRadius() + 1,
                 game.Player.Position);
             var playerStep = game.Player.MakeStep(game);
             Animations.Add(new CreatureAnimation
@@ -22,6 +22,7 @@ namespace Keep_Silence
                 Command = playerStep
             });
             game.Player.Position = playerStep.Target;
+            game.Player.ChangeHealthPoints(PlayerSettings.DamagePerTick, game);
             
             foreach (var monster in game.CurrentRoom.Monsters)
             {

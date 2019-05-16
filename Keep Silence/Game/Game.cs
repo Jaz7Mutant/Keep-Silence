@@ -14,7 +14,7 @@ namespace Keep_Silence
         public string CurrentMessage;
         public bool IsPaused;
         public bool IsEnd;
-        private Dictionary<string, Room> roomList;
+        public Dictionary<string, Room> RoomList;
 
         public void GameOver() => IsEnd = true;
 
@@ -22,14 +22,14 @@ namespace Keep_Silence
 
         public void LoadRooms()
         {
-            roomList = RoomLoader.GetRoomsFromDirectory();
-            CurrentRoom = roomList.First().Value;
+            RoomList = RoomLoader.GetRoomsFromDirectory();
+            CurrentRoom = RoomList.First().Value;
             Player = new Player() {Position = new Point(4,2)};
         }
 
         public void ChangeRoom(Door door)
         {
-            CurrentRoom = roomList[door.NextRoomName];
+            CurrentRoom = RoomList[door.NextRoomName];
             Player.Position = door.NextRoomStartPosition;
             KeyPressed = Keys.None;
         }
@@ -93,7 +93,8 @@ namespace Keep_Silence
         public bool IsStepCorrect(Point current, Point target) =>
             (target.X - current.X == 0 ^ target.Y - current.Y == 0)
             && InBounds(target)
-            && CurrentRoom.Map[target.X, target.Y] is Terrain;
+            && CurrentRoom.Map[target.X, target.Y] is Terrain
+            && CurrentRoom.Monsters.All(x => x.Position != target);
 
         public bool InBounds(Point point) =>
             point.X < CurrentRoom.Width 
